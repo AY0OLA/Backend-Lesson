@@ -4,7 +4,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
 
-from .model import Posts, get_session  # (Posts, get_session not used here yet)
+from .model import init_db  # (Posts, get_session not used here yet)
 
 app = FastAPI()
 
@@ -12,14 +12,11 @@ app = FastAPI()
 # init_db()
 
 
-# class Post(BaseModel):
-#     title: str
-#     content: str
-#     published: bool = True
-posts = [
-    {"title": "tile of post 1", "content": "content of post 1", "id": 1},
-    {"title": "favotire foods", "content": "I like pizza", "id": 2},
-]
+class Post(BaseModel):
+    title: str
+    content: str
+    published: bool = True
+
 
 #DB Connection
 while True:
@@ -39,10 +36,6 @@ while True:
         print("Connection to database failed")
         print("Error:", error)
         time.sleep(2)
-
-@app.post("/")
-def get_post(get_session):
-    return {"data": Posts}
 
 
 @app.get("/")
@@ -65,7 +58,7 @@ def get_posts():
 def create_posts(post: Post):
     cursor.execute(
         """
-        INSERT INTO posts (title, content, publish)
+        INSERT INTO posts (title, content, published)
         VALUES (%s, %s, %s)
         RETURNING *
         """,

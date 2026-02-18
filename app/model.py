@@ -14,10 +14,10 @@ class Posts(SQLModel, table=True):
 # Pick ONE.
 
 # Option A: either you use SQLite (it Dey simple and it make sense for learning)
-database_url = "sqlite:///postgres:Okunowo02@localhost/Fastapi"
+# database_url = "sqlite:///./database.db"
 
 # Option B: Postgres (use this one if you won actually use Postgres)
-# database_url = "postgresql+psycopg2://postgres:Okunowo02@localhost/Fastapi"
+database_url = "postgresql+psycopg2://postgres:Okunowo02@localhost:5432/Fastapi"
 
 engine = create_engine(database_url, echo=True)
 
