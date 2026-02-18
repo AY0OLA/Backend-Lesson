@@ -4,12 +4,15 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
 
-from .model import init_db  # (Posts, get_session not used here yet)
+from .model import init_db
 
 app = FastAPI()
 
-# Optional sha: create tables (only works if you really won use SQLModel engine wey Dey above)
-# init_db()
+
+# Create tables automatically when app starts
+@app.on_event("startup")
+def on_startup():
+    init_db()
 
 
 class Post(BaseModel):
@@ -17,12 +20,17 @@ class Post(BaseModel):
     content: str
     published: bool = True
 
+# my_posts = [
+#     {"title": "tile of post 1", "content": "content of post 1", "id": 1},
+#     {"title": "favotire foods", "content": "I like pizza", "id": 2},
+# ]
 
-#DB Connection
+# DB Connection (psycopg2)
 while True:
     try:
         conn = psycopg2.connect(
             host="localhost",
+            port=5432,
             database="Fastapi",
             user="postgres",
             password="Okunowo02",
@@ -50,10 +58,6 @@ def get_posts():
     return {"data": posts}
 
 
-# FIXES:
-# - INSERT no Dey use WHERE
-# - remove undefined "id"
-# - column name gats match DB: published (not publish) unless say your DB Dey different
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
 def create_posts(post: Post):
     cursor.execute(
@@ -69,17 +73,12 @@ def create_posts(post: Post):
     return {"data": new_post}
 
 
-# FIX: must pass a 1-item tuple -> (id,)
 @app.get("/posts/{id}")
 def get_post(id: int):
     cursor.execute("SELECT * FROM posts WHERE id = %s", (id,))
     post = cursor.fetchone()
-
     if not post:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"post with id: {id} was not found",
-        )
+        raise HTTPException(status_code=404, detail=f"post with id: {id} was not found")
     return {"data": post}
 
 
@@ -88,13 +87,8 @@ def delete_post(id: int):
     cursor.execute("DELETE FROM posts WHERE id = %s RETURNING *", (id,))
     deleted_post = cursor.fetchone()
     conn.commit()
-
     if deleted_post is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Post with id: {id} does not exist",
-        )
-
+        raise HTTPException(status_code=404, detail=f"Post with id: {id} does not exist")
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
@@ -111,11 +105,6 @@ def update_post(id: int, post: Post):
     )
     updated_post = cursor.fetchone()
     conn.commit()
-
     if updated_post is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"post with id: {id} doesn't exist",
-        )
-
+        raise HTTPException(status_code=404, detail=f"post with id: {id} doesn't exist")
     return {"data": updated_post}

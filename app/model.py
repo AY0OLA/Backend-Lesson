@@ -7,18 +7,11 @@ class Posts(SQLModel, table=True):
     title: str = Field(index=True)
     content: str
     published: bool = Field(default=False, index=True)
-    created_at: datetime = Field(default_factory=datetime.utcnow, index=True)  #typo fix
+    created_at: datetime = Field(default_factory=datetime.utcnow, index=True)
 
 
-#FIX: no Dey mix sqlite and postgresql in one URL.
-# Pick ONE.
-
-# Option A: either you use SQLite (it Dey simple and it make sense for learning)
-# database_url = "sqlite:///./database.db"
-
-# Option B: Postgres (use this one if you won actually use Postgres)
+# Postgres URL
 database_url = "postgresql+psycopg2://postgres:Okunowo02@localhost:5432/Fastapi"
-
 engine = create_engine(database_url, echo=True)
 
 
@@ -27,5 +20,5 @@ def init_db():
 
 
 def get_session():
-    with Session(init_db) as session:
+    with Session(engine) as session:  # use engine
         yield session
