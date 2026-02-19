@@ -6,7 +6,7 @@ class Posts(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     title: str = Field(index=True)
     content: str
-    published: bool = Field(default=False, index=True)
+    published: bool = Field(default=True, index=True)
     created_at: datetime = Field(default_factory=datetime.utcnow, index=True)
 
 
