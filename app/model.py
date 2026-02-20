@@ -9,6 +9,11 @@ class Posts(SQLModel, table=True):
     published: bool = Field(default=True, index=True)
     created_at: datetime = Field(default_factory=datetime.utcnow, index=True)
 
+class User(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    email: str = Field(index=True, nullable=False, unique=True)
+    password: str = Field(index=True, nullable=False)
+    created_at: datetime = Field(default_factory=datetime.now, index=True, nullable=False)
 
 # Postgres URL
 database_url = "postgresql+psycopg2://postgres:Okunowo02@localhost:5432/Fastapi"
