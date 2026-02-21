@@ -1,13 +1,10 @@
 from fastapi import FastAPI, Response, status, HTTPException, Depends
-from pydantic import BaseModel
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from typing import List
 import time
-from . import schema, utils
-from sqlmodel import Session
-from .model import init_db, Posts, get_session, User
-from .routers import post, user
+from .model import init_db
+from .routers import post, user, auth
 
 
 app = FastAPI()
@@ -41,3 +38,4 @@ while True:
 
 app.include_router(post.router)
 app.include_router(user.router)
+app.include_router(auth.router)

@@ -5,9 +5,11 @@ from .. import schema, utils
 from sqlmodel import Session
 from ..model import User, get_session
 
-router = APIRouter()
+router = APIRouter(
+    prefix= "/users",tags=['Users']
+)
 
-@router.post("/users", status_code=status.HTTP_201_CREATED, response_model=schema.UserOut)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schema.UserOut)
 def create_user(user: schema.UserCreate, db: Session = Depends(get_session)):
     pwd_context = utils.hash(user.password)
     user.password = pwd_context
@@ -18,7 +20,7 @@ def create_user(user: schema.UserCreate, db: Session = Depends(get_session)):
     return new_user
 
 
-@router.get("/users/{id}", response_model=schema.UserOut)
+@router.get("/{id}", response_model=schema.UserOut)
 def get_user(id: int, db: Session = Depends(get_session)):
     user = db.query(User).filter(User.id == id).first()
 
