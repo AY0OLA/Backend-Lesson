@@ -12,6 +12,9 @@ class CreatePost(PostBase):
 class Post(PostBase):
     # title, content, published will be inherit from PostBase
    id: int
+   created_at: datetime
+   owner_id: int
+
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -32,4 +35,4 @@ class Token(BaseModel):
     token_type: str
 
 class TokenData(BaseModel):
-    username: str
+    id: int
