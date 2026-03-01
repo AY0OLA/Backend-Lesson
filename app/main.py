@@ -5,7 +5,7 @@ from .config import settings
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-origins = ["*"]
+origins = ["https://backend-lesson-wjxo.onrender.com"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -28,4 +28,4 @@ app.include_router(vote.router)
 
 @app.get("/")
 def root():
-    return {"message": "Hello World"}
+    return {"message": "World War loading"}

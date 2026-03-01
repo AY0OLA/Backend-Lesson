@@ -51,6 +51,7 @@ class Vote(SQLModel, table=True):
 # Postgres URL
 database_url = f"postgresql+psycopg2://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}"
 engine = create_engine(database_url, echo=True)
+# t(host='localhost', database='Fastapi', user='postgres', password='Okunowo02', 
 
 
 def init_db():
