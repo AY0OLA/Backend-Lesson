@@ -3,5 +3,4 @@ venv/
 .env
 .vscode
 wheels
-Dockerfile
 docker-compose.yml
